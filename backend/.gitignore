@@ -1,0 +1,21 @@
+# --- Python / Flask ---
+venv/
+__pycache__/
+*.pyc
+.env
+instance/
+
+# --- Databases ---
+*.db
+*.sqlite
+.mysql_history
+
+# --- OS / IDE ---
+.vscode/
+.DS_Store
+Thumbs.db
+
+# --- Node / React (For later) ---
+node_modules/
+build/
+.eslintcache
