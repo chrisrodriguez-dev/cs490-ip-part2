@@ -1,1 +1,20 @@
-<!-- this is going to be our landing page for our website -->
+
+<form method="POST" action="/">
+   <button type="submit" name="run_query_button">Run Query to Show Top 5 Films</button>
+</form>
+
+<h1>Top 5 Rented Films</h1>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Total Rentals</th>
+    </tr>
+    {% for film in films %}
+    <tr>
+        <td>{{ film.title }}</td>
+        <td>{{ film.CategoryName }}</td>
+        <td>{{ film.TimesRented }}</td>
+    </tr>
+    {% endfor %}
+</table>
