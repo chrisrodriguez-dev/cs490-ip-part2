@@ -1,11 +1,11 @@
 import os
 import urllib.parse
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 from dotenv import load_dotenv
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="../frontend/templates")
 
 load_dotenv()
 
@@ -28,10 +28,28 @@ DB_PORT = os.getenv('DB_PORT')
 DB_NAME = os.getenv('DB_NAME')
 
 
+def run_query(query):
+    """Helper function to run a query and return results as a list of dicts."""
+    result = db.session.execute(text(query)).mappings().all()
+    return [dict(row) for row in result]
+
 # this decorator tells flask what URL should activate this function
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def hello_world():
-    return "<h>Hello there</h>"
+    if request.method == 'POST':
+        query = """
+        SELECT f.film_id, f.title, c.name AS CategoryName, COUNT(r.rental_id) as TimesRented 
+        FROM film f 
+        JOIN film_category fc ON fc.film_id = f.film_id 
+        JOIN category c ON fc.category_id = c.category_id 
+        JOIN inventory i on i.film_id = f.film_id 
+        JOIN rental r on r.inventory_id = i.inventory_id 
+        GROUP BY f.film_id, f.title, CategoryName 
+        ORDER BY TimesRented DESC LIMIT 5;
+        """
+        return render_template("index.html", films=run_query(query))
+    return render_template("index.html", films=[])
+
 
 @app.route('/test-db')
 def test_db():
