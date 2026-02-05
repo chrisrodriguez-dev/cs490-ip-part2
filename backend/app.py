@@ -67,6 +67,29 @@ def landing_page():
         "actorMovies": run_query(query2)
     })
 
+@app.route("/api/film/<int:film_id>", methods=['GET'])
+def get_film_details(film_id):
+    # Use :film_id as a named parameter instead of %s
+    query = text("""
+    SELECT 
+        f.title, 
+        f.description, 
+        f.release_year, 
+        f.rating, 
+        f.special_features,
+        f.length,
+        c.name AS category
+    FROM film f
+    JOIN film_category fc ON f.film_id = fc.film_id
+    JOIN category c ON fc.category_id = c.category_id
+    WHERE f.film_id = :id;
+    """)
+    
+    # Pass the variable as a dictionary to bind it to :id
+    result = db.session.execute(query, {"id": film_id}).mappings().first()
+    if result:
+        return jsonify(dict(result))
+
 @app.route('/test-db')
 def test_db():
     try:
