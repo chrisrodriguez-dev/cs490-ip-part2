@@ -9,8 +9,7 @@ app = Flask(__name__, template_folder="../frontend/templates")
 
 load_dotenv()
 
-raw_password = os.getenv('DB_PASS')
-# This turns the '@' into '%40' so the URL doesn't break
+raw_password = os.getenv('DB_PASS') #This turns the '@' into '%40' so the URL doesn't break
 safe_password = urllib.parse.quote_plus(raw_password)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -61,15 +60,15 @@ def landing_page():
     ORDER BY total_rentals DESC
     LIMIT 5;
     """
-    # 2. Package it in a dictionary so React can find "movies"
+    #Package it in a dictionary so React can find "movies"
     return jsonify({
         "movies": run_query(query1), 
         "actorMovies": run_query(query2)
     })
 
+
 @app.route("/api/film/<int:film_id>", methods=['GET'])
 def get_film_details(film_id):
-    # Use :film_id as a named parameter instead of %s
     query = text("""
     SELECT 
         f.title, 
@@ -89,6 +88,35 @@ def get_film_details(film_id):
     result = db.session.execute(query, {"id": film_id}).mappings().first()
     if result:
         return jsonify(dict(result))
+    return jsonify({"error": "Film not found"}), 404 
+    
+@app.route("/api/actor/<int:actor_id>", methods=['GET'])
+def get_actor_details(actor_id):
+    query = text("""
+    SELECT 
+        a.first_name, 
+        a.last_name, 
+        f.title, 
+        f.release_year,
+        COUNT(r.rental_id) as total_rentals
+    FROM actor a
+    JOIN film_actor fa ON a.actor_id = fa.actor_id
+    JOIN film f ON fa.film_id = f.film_id
+    JOIN inventory i ON f.film_id = i.film_id
+    JOIN rental r ON i.inventory_id = r.inventory_id
+    WHERE a.actor_id = :id
+    GROUP BY a.actor_id, a.first_name, a.last_name, f.film_id, f.title, f.release_year
+    ORDER BY total_rentals DESC
+    LIMIT 5;
+    """)
+    
+    result = db.session.execute(query, {"id": actor_id}).mappings().all()
+    
+    if result:
+        print(result)
+        return jsonify([dict(row) for row in result])
+    else:
+        return jsonify({"error": "Actor not found"}), 404
 
 @app.route('/test-db')
 def test_db():
