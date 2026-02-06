@@ -99,8 +99,10 @@ function App() {
 
                 <div className="text-sm font-mono space-y-1 italic">
                   <p>Released: {selectedDetail.release_year}</p>
+                  <p>Special Features: {selectedDetail.special_features}</p>
                   <p>Rating: {selectedDetail.rating}</p>
                   <p>Length: {selectedDetail.length} mins</p>
+                  <p>Category: {selectedDetail.category}</p>
                 </div>
               </div>
             )}
