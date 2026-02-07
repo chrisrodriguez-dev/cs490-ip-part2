@@ -5,11 +5,13 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 from dotenv import load_dotenv
 
+
 app = Flask(__name__, template_folder="../frontend/templates")
+
 
 load_dotenv()
 
-raw_password = os.getenv('DB_PASS') #This turns the '@' into '%40' so the URL doesn't break
+raw_password = os.getenv('DB_PASSWORD') #This turns the '@' into '%40' so the URL doesn't break
 safe_password = urllib.parse.quote_plus(raw_password)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -20,11 +22,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_HOST = os.getenv('DB_HOST')
-DB_PORT = os.getenv('DB_PORT')
-DB_NAME = os.getenv('DB_NAME')
+DB_USER = os.getenv('DB_USER') or "root"
+DB_PASSWORD = os.getenv('DB_PASSWORD') or "part2"
+DB_HOST = os.getenv('DB_HOST') or "127.0.0.1"
+DB_PORT = os.getenv('DB_PORT') or "3306"
+DB_NAME = os.getenv('DB_NAME') or "sakila"
 
 
 def run_query(query):
@@ -71,17 +73,17 @@ def landing_page():
 def get_film_details(film_id):
     query = text("""
     SELECT 
-        f.title, 
-        f.description, 
-        f.release_year, 
-        f.rating, 
-        f.special_features,
-        f.length,
-        c.name AS category
-    FROM film f
-    JOIN film_category fc ON f.film_id = fc.film_id
-    JOIN category c ON fc.category_id = c.category_id
-    WHERE f.film_id = :id;
+    f.title, 
+    f.description, 
+    f.release_year, 
+    f.rating, 
+    f.special_features,
+    f.length,
+    c.name AS category
+FROM film f
+JOIN film_category fc ON f.film_id = fc.film_id
+JOIN category c ON fc.category_id = c.category_id
+WHERE f.film_id = :id;
     """)
     
     # Pass the variable as a dictionary to bind it to :id
@@ -131,4 +133,4 @@ def test_db():
         return jsonify({"error": str(e)}), 500
     
 if __name__ == "__main__":
-    app.run()
+    app.run(host="127.0.0.1", port=5000, debug=True)
