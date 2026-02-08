@@ -120,6 +120,25 @@ def get_actor_details(actor_id):
     else:
         return jsonify({"error": "Actor not found"}), 404
 
+@app.route("/api/search/<search_criteria>")
+def search_films(search_criteria):
+    search_term = f"%{search_criteria}%"
+    query = text("""
+        SELECT DISTINCT f.film_id, f.title, f.description, c.name AS genre
+        FROM film f
+        JOIN film_category fc ON f.film_id = fc.film_id
+        JOIN category c ON fc.category_id = c.category_id
+        JOIN film_actor fa ON f.film_id = fa.film_id
+        JOIN actor a ON fa.actor_id = a.actor_id
+        WHERE f.title LIKE :val 
+           OR c.name LIKE :val 
+           OR a.first_name LIKE :val 
+           OR a.last_name LIKE :val
+    """)
+    result = db.session.execute(query, {"val": search_term}).mappings().all()
+    return jsonify([dict(row) for row in result])
+
+
 @app.route('/test-db')
 def test_db():
     try:

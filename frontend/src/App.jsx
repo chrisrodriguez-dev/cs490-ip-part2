@@ -9,6 +9,8 @@ function App() {
   const [actorMovies, setActorMovies] = useState([])
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     fetch('/api/landing-page')
@@ -19,6 +21,17 @@ function App() {
       })
       .catch(err => console.error("Fetch error:", err))
   }, [])
+
+  useEffect(() => {
+  if (searchQuery) {
+    fetch(`/api/search/${searchQuery}`) 
+      .then(res => res.json())
+      .then(data => setSearchResults(data))
+      .catch(err => console.error("Search error:", err));
+  } else {
+    setSearchResults([]);   
+  }
+}, [searchQuery])
 
   function handleClick(id) {    
     fetch(`/api/film/${id}`)
@@ -56,7 +69,38 @@ return (
             SAKILA
           </h1>
           
-            <SearchBar value="" onChange={() => {}} />  
+            <header className="mb-20 mt-10 text-center relative w-full max-w-md mx-auto">
+  
+  
+  <div className="relative w-full">
+    <SearchBar value={searchQuery} onChange={setSearchQuery} />
+    
+    {searchQuery && searchResults.length > 0 && (
+      <div className="absolute z-50 w-full mt-2 bg-zinc-900/95 backdrop-blur-xl border border-zinc-800 rounded-xl shadow-2xl max-h-60 overflow-y-auto custom-scrollbar">
+        {searchResults.map((movie) => (
+          <button
+            key={movie.film_id}
+            onClick={() => {
+        
+              console.log("Movie selected:", movie.film_id);
+              setSearchQuery(''); 
+            }}
+            className="w-full text-left p-4 hover:bg-amber-500/10 border-b border-zinc-800 last:border-0 transition-colors flex justify-between items-center group"
+          >
+            <div>
+              <p className="text-zinc-200 font-bold uppercase text-sm group-hover:text-amber-400 transition-colors">
+                {movie.title}
+              </p>
+              <p className="text-zinc-500 text-[10px] font-mono">{movie.genre}</p>
+            </div>
+            <Popcorn className="w-4 h-4 text-amber-500/50" />
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+  
+</header>
           <p className="text-zinc-500 font-mono tracking-[0.3em] uppercase text-xs mt-2">Sakila Inventory Management</p>
         </header>
 
@@ -69,27 +113,28 @@ return (
               <span className="text-[10px] text-zinc-500 font-mono italic">Total Rentals</span>
             </div>
             
-            <ul className="space-y-3">
-              {movies.map((movie) => (
-                <li key={movie.film_id} className="group">
-                  <button 
-                    onClick={() => handleClick(movie.film_id)}
-                    className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-amber-500/5 transition-all text-left border border-transparent hover:border-amber-500/10"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="relative flex items-center justify-center">
-                        <Popcorn className="w-5 h-5 text-amber-500 blur-[2px] absolute inset-0 opacity-70 animate-flicker" />
-                        <Popcorn className="w-5 h-5 text-amber-400 relative z-10" />
-                      </div>
-                      <span className="text-zinc-300 group-hover:text-amber-400 transition-all font-medium uppercase tracking-tight">
-                        {movie.title}
-                      </span>
-                    </div>
-                    <span className="text-zinc-600 font-mono text-sm">{movie.TimesRented}</span>
-                  </button> 
-                </li>
-              ))}
-            </ul>
+        <ul className="space-y-3">
+        
+        {movies.map((movie) => (
+          <li key={movie.film_id} className="group">
+            <button 
+              onClick={() => handleClick(movie.film_id)}
+              className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-amber-500/5 transition-all text-left border border-transparent hover:border-amber-500/10"
+            >
+              <div className="flex items-center gap-4">
+                <div className="relative flex items-center justify-center">
+                  <Popcorn className="w-5 h-5 text-amber-500 blur-[2px] absolute inset-0 opacity-70 animate-flicker" />
+                  <Popcorn className="w-5 h-5 text-amber-400 relative z-10" />
+                </div>
+                <span className="text-zinc-300 group-hover:text-amber-400 transition-all font-medium uppercase tracking-tight">
+                  {movie.title}
+                </span>
+              </div>
+              <span className="text-zinc-600 font-mono text-sm">{movie.TimesRented}</span>
+            </button> 
+          </li>
+        ))}
+      </ul>
           </section>
 
         

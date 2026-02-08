@@ -14,9 +14,9 @@ const searchbar = ({ value, onChange }) => {
        
         <input 
           type="text"
-          placeholder="SEARCH..."
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          placeholder="Enter name, film, or genre..."
           className="w-full bg-white/10 border border-zinc-800 rounded-xl py-4 pl-12 pr-16 font-mono text-xs tracking-widest text-zinc-300 outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 transition-all backdrop-blur-md placeholder:text-zinc-700"
         />
         
