@@ -113,28 +113,28 @@ return (
               <span className="text-[10px] text-zinc-500 font-mono italic">Total Rentals</span>
             </div>
             
-        <ul className="space-y-3">
-        
-        {movies.map((movie) => (
-          <li key={movie.film_id} className="group">
-            <button 
-              onClick={() => handleClick(movie.film_id)}
-              className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-amber-500/5 transition-all text-left border border-transparent hover:border-amber-500/10"
-            >
-              <div className="flex items-center gap-4">
-                <div className="relative flex items-center justify-center">
-                  <Popcorn className="w-5 h-5 text-amber-500 blur-[2px] absolute inset-0 opacity-70 animate-flicker" />
-                  <Popcorn className="w-5 h-5 text-amber-400 relative z-10" />
-                </div>
-                <span className="text-zinc-300 group-hover:text-amber-400 transition-all font-medium uppercase tracking-tight">
-                  {movie.title}
-                </span>
+      <ul className="space-y-3">
+      
+      {movies.map((movie) => (
+        <li key={movie.film_id} className="group">
+          <button 
+            onClick={() => handleClick(movie.film_id)}
+            className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-amber-500/5 transition-all text-left border border-transparent hover:border-amber-500/10"
+          >
+            <div className="flex items-center gap-4">
+              <div className="relative flex items-center justify-center">
+                <Popcorn className="w-5 h-5 text-amber-500 blur-[2px] absolute inset-0 opacity-70 animate-flicker" />
+                <Popcorn className="w-5 h-5 text-amber-400 relative z-10" />
               </div>
-              <span className="text-zinc-600 font-mono text-sm">{movie.TimesRented}</span>
-            </button> 
-          </li>
-        ))}
-      </ul>
+              <span className="text-zinc-300 group-hover:text-amber-400 transition-all font-medium uppercase tracking-tight">
+                {movie.title}
+              </span>
+            </div>
+            <span className="text-zinc-600 font-mono text-sm">{movie.TimesRented}</span>
+          </button> 
+        </li>
+      ))}
+    </ul>
           </section>
 
         

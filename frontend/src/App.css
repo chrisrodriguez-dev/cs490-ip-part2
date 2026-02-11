@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
 @import "tailwindcss";
 
 .body {
@@ -8,4 +9,10 @@
     linear-gradient(to right, #1f2937 1px, transparent 1px),
     linear-gradient(to bottom, #1f2937 1px, transparent 1px);
 
+}
+.nyt-masthead {
+  font-family: 'UnifrakturMaguntia', serif !important;
+  text-transform: none !important; /* NYT uses 'Sakila', not 'SAKILA' */
+  letter-spacing: -0.01em;
+  font-weight: 400;
 }

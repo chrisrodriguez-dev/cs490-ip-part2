@@ -138,6 +138,12 @@ def search_films(search_criteria):
     result = db.session.execute(query, {"val": search_term}).mappings().all()
     return jsonify([dict(row) for row in result])
 
+#film details api
+@app.route("/api/film-details/<film_id>")
+def film_details(film_id):
+    return
+
+
 
 @app.route('/test-db')
 def test_db():
