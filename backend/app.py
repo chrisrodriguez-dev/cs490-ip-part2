@@ -139,20 +139,21 @@ def search_films(search_criteria):
     return jsonify([dict(row) for row in result])
 
 #film details api
-@app.route("/api/film-details/<film_id>")
+@app.route("/api/film-details/<int:film_id>")
 def film_details(film_id):
-    return
+    query = text("SELECT * FROM film WHERE film_id = :val")
+    result = db.session.execute(query, {"val": film_id}).mappings().first()
+    if result:
+        return jsonify(dict(result)) 
+    return jsonify({"error": "Film not found"}), 404
 
 
 
 @app.route('/test-db')
 def test_db():
     try:
-        # A simple query to make sure the handshake works
         query = text("SELECT 'Connection Successful' as status")
         result = db.session.execute(query).mappings().first()
-        
-        # We turn the result into a dictionary so jsonify can handle it
         return jsonify(dict(result)) 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

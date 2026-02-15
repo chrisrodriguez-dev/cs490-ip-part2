@@ -3,6 +3,7 @@ import './App.css'
 import Popup from './components/popup'
 import { Popcorn, Star } from 'lucide-react';
 import SearchBar from './components/searchbar'
+import { useNavigate } from 'react-router-dom';
 
 function App() {
   const [movies, setMovies] = useState([])
@@ -11,7 +12,7 @@ function App() {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetch('/api/landing-page')
       .then((res) => res.json())
@@ -81,8 +82,7 @@ return (
           <button
             key={movie.film_id}
             onClick={() => {
-        
-              console.log("Movie selected:", movie.film_id);
+              navigate(`/film-details/${movie.film_id}`);
               setSearchQuery(''); 
             }}
             className="w-full text-left p-4 hover:bg-amber-500/10 border-b border-zinc-800 last:border-0 transition-colors flex justify-between items-center group"
