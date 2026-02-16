@@ -110,7 +110,7 @@ function FilmDetails(){
   </div>
   <Popup open={isRentalOpen} onClose={() => setIsRentalOpen(false)}>
     <div className="p-10 bg-[#121214] text-white">
-        <div className="border border-zinc-800 p-6 rounded-xl bg-black/50">
+        <div className="border border-zinc-800 p-24 rounded-xl bg-black">
             <p className="text-zinc-600 text-xs uppercase tracking-widest">Form Logic Pending...</p>
         </div>
     </div>

@@ -158,5 +158,15 @@ def test_db():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+
+@app.route("/api/customers")
+def get_customers():
+    query = text("""
+        SELECT customer_id, first_name, last_name, email
+        FROM customer
+    """)
+    result = db.session.execute(query).mappings().all()
+    return jsonify([dict(row) for row in result])
+    
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)
