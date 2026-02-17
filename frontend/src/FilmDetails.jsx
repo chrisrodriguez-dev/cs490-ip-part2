@@ -67,29 +67,29 @@ function FilmDetails(){
           </div>
         </div>
       </section>
-      <aside className="bg-zinc-900/30 border border-zinc-800 rounded-2xl p-8 backdrop-blur-sm">
-        <div className="space-y-10">
-          <div>
-            <h3 className="text-amber-500 font-mono text-[10px] uppercase tracking-widest mb-6 border-b border-amber-500/20 pb-2">Film special_features columns goes here</h3>
-            <div className="flex flex-wrap gap-2">
-              {film.special_features?.split(',').map(feature => (
-                <span key={feature} className="text-[10px] font-mono bg-zinc-800 px-2 py-1 rounded text-zinc-400 uppercase">
-                  {feature.trim()}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <ul className="space-y-4">
-               <li className="flex items-center gap-3 group">
-                 <div className="w-1 h-1 bg-amber-500 rounded-full group-hover:scale-150 transition-transform"></div>
-                 <span className="text-sm font-bold text-zinc-400 group-hover:text-white transition-colors">"..."</span>
-               </li>
-            </ul>
-          </div>
-        </div>
-      </aside>
+<aside className="bg-zinc-900/30 border border-zinc-800 rounded-2xl p-8 backdrop-blur-sm">
+  <div className="space-y-10">
+    <div>
+      <h3 className="text-amber-500 font-mono text-[10px] uppercase tracking-widest mb-6 border-b border-amber-500/20 pb-2">
+        Special Features
+      </h3>      
+      <div className="flex flex-wrap gap-3">
+        {film.special_features ? (
+          film.special_features.split(',').map((feature) => (
+            <span 
+              key={feature} 
+              className="text-[10px] font-mono bg-zinc-800 border border-zinc-700 px-3 py-1.5 rounded text-zinc-300 uppercase tracking-tighter hover:border-amber-500/50 transition-colors"
+            >
+              {feature.trim()}
+            </span>
+          ))
+        ) : (
+          <span className="text-zinc-600 font-mono text-[10px] italic">No special features recorded</span>
+        )}
+      </div>
+    </div>
+  </div>
+</aside>
     </main>
 <footer className="mt-12 pt-12 border-t border-zinc-900">
   <button 
