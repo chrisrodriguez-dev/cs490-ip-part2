@@ -5,6 +5,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import FilmDetails from './FilmDetails.jsx';
 import Navbar from './components/navbar.jsx'; 
 import Customers from './Customers.jsx';
+import Films from './Films.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -13,6 +14,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/" element={<App/>} />
       <Route path="/film-details/:id" element={<FilmDetails/>} />
       <Route path="/customers" element={<Customers/>} />
+      <Route path="/film-details" element={<Films/>}/>
     </Routes>
   </BrowserRouter>,
 )

@@ -15,11 +15,14 @@ function FilmDetails(){
       })
       .catch(err => console.error("Fetch error:", err))
   }, [id])
+ 
   return (
     <div className="bg-black min-h-screen w-full relative overflow-x-hidden font-sans selection:bg-amber-500/30">
 
   <div className="absolute inset-0 bg-grid-pattern pointer-events-none opacity-40"></div>
   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500/5 via-transparent to-transparent pointer-events-none"></div>
+
+
 
   <div className="relative z-10 w-full max-w-7xl mx-auto p-8 md:p-16 text-white">
 

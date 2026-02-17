@@ -167,6 +167,16 @@ def get_customers():
     """)
     result = db.session.execute(query).mappings().all()
     return jsonify([dict(row) for row in result])
+
+
+@app.route("/api/films")
+def get_films():
+    query = text("""
+        SELECT film_id, title, release_year
+        FROM film
+    """)
+    result = db.session.execute(query).mappings().all()
+    return jsonify([dict(row) for row in result])
     
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)

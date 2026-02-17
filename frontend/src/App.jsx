@@ -73,32 +73,7 @@ return (
             <header className="mb-20 mt-10 text-center relative w-full max-w-md mx-auto">
   
   
-  <div className="relative w-full">
-    <SearchBar value={searchQuery} onChange={setSearchQuery} />
-    
-    {searchQuery && searchResults.length > 0 && (
-      <div className="absolute z-50 w-full mt-2 bg-zinc-900/95 backdrop-blur-xl border border-zinc-800 rounded-xl shadow-2xl max-h-60 overflow-y-auto custom-scrollbar">
-        {searchResults.map((movie) => (
-          <button
-            key={movie.film_id}
-            onClick={() => {
-              navigate(`/film-details/${movie.film_id}`);
-              setSearchQuery(''); 
-            }}
-            className="w-full text-left p-4 hover:bg-amber-500/10 border-b border-zinc-800 last:border-0 transition-colors flex justify-between items-center group"
-          >
-            <div>
-              <p className="text-zinc-200 font-bold uppercase text-sm group-hover:text-amber-400 transition-colors">
-                {movie.title}
-              </p>
-              <p className="text-zinc-500 text-[10px] font-mono">{movie.genre}</p>
-            </div>
-            <Popcorn className="w-4 h-4 text-amber-500/50" />
-          </button>
-        ))}
-      </div>
-    )}
-  </div>
+ 
   
 </header>
           <p className="text-zinc-500 font-mono tracking-[0.3em] uppercase text-xs mt-2">Sakila Inventory Management</p>
