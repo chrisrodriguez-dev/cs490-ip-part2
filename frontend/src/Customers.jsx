@@ -1,9 +1,12 @@
 import './App.css'
 import { useState, useEffect } from 'react'
 import { Users, Mail } from 'lucide-react'; // Added icons to match your style
+import ReactPaginate from 'react-paginate';
 
 function Customers() {
     const [customers, setCustomers] = useState([]);
+    const [itemOffset, setItemOffset] = useState(0);
+    const itemsPerPage = 10;
 
     useEffect(() => {
         fetch('/api/customers')
@@ -13,6 +16,17 @@ function Customers() {
             })
             .catch(err => console.error("Fetch error:", err))
     }, [])
+
+    // Pagination Logic
+    const endOffset = itemOffset + itemsPerPage;
+    const currentItems = customers.slice(itemOffset, endOffset);
+    const pageCount = Math.ceil(customers.length / itemsPerPage);
+
+    const handlePageClick = (event) => {
+        const newOffset = (event.selected * itemsPerPage) % customers.length;
+        setItemOffset(newOffset);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     return (
         <div className="bg-[#09090B] min-h-screen w-full relative overflow-x-hidden font-sans selection:bg-amber-500/30">
@@ -38,7 +52,7 @@ function Customers() {
                         </div>
 
                         <ul className="space-y-4">
-                            {customers.map(customer => (
+                            {currentItems.map(customer => (
                                 <li key={customer.customer_id} className="group">
                                     <div className="w-full flex items-center justify-between p-4 rounded-lg bg-zinc-900/40 border border-zinc-800/50 hover:border-amber-500/30 hover:bg-amber-500/5 transition-all duration-300">
                                         <div className="flex items-center gap-6">
@@ -60,7 +74,21 @@ function Customers() {
                                 </li>
                             ))}
                         </ul>
-                    </section>
+                    </section>                    
+                    <ReactPaginate
+                    breakLabel="..."
+                    nextLabel="NEXT >"
+                    onPageChange={handlePageClick}
+                    pageRangeDisplayed={3}
+                    pageCount={pageCount}
+                    previousLabel="< PREV"
+                    containerClassName="flex justify-center gap-2 mt-12 font-mono text-[10px] uppercase tracking-widest items-center"
+                    pageLinkClassName="px-3 py-2 border border-zinc-800 rounded hover:border-amber-500/50 hover:bg-amber-500/10 transition-colors"
+                    previousLinkClassName="px-3 py-2 border border-zinc-800 rounded hover:text-amber-500"
+                    nextLinkClassName="px-3 py-2 border border-zinc-800 rounded hover:text-amber-500"
+                    activeLinkClassName="bg-amber-500/20 border-amber-500 text-amber-500 font-bold"
+                    disabledLinkClassName="opacity-30 cursor-not-allowed"
+                    />
                 </main>
             </div>
         </div>
