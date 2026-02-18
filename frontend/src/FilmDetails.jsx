@@ -28,7 +28,7 @@ function FilmDetails(){
 
     <header className="border-b border-zinc-800 pb-12 mb-12">
       <div className="flex flex-col md:flex-row justify-between items-end gap-6">
-        <h1 className="font-tomorrow text-8xl font-black uppercase italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-[#FDE68A] via-[#F59E0B] to-[#B45309] drop-shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+        <h1 className="font-tomorrow text-6xl font-black uppercase italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-[#FDE68A] via-[#F59E0B] to-[#B45309] drop-shadow-[0_0_15px_rgba(245,158,11,0.3)]">
           {film.title}
         </h1>
         <div className="flex gap-4">
