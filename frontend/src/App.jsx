@@ -56,15 +56,9 @@ function App() {
 
 return (
     <div className="bg-[#09090B] min-h-screen w-full relative overflow-x-hidden font-sans selection:bg-amber-500/30">
-      
-      
       <div className="absolute inset-0 bg-grid-pattern pointer-events-none"></div>
-      
-      
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500/5 via-transparent to-transparent pointer-events-none"></div>
-
       <div className="relative z-10 flex flex-col items-center p-6 md:p-12 text-white">
-        
         <header className="mb-20 mt-10 text-center">
           <h1 className="font-tomorrow text-7xl font-black uppercase tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-[#FDE68A] via-[#F59E0B] to-[#B45309] drop-shadow-[0_0_15px_rgba(245,158,11,0.3)] mb-4 italic">
             SAKILA
