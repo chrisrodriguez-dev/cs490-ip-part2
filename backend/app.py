@@ -8,10 +8,9 @@ from dotenv import load_dotenv
 
 app = Flask(__name__, template_folder="../frontend/templates")
 
-
 load_dotenv()
 
-raw_password = os.getenv('DB_PASSWORD') #This turns the '@' into '%40' so the URL doesn't break
+raw_password = os.getenv('DB_PASS') #This turns the '@' into '%40' so the URL doesn't break
 safe_password = urllib.parse.quote_plus(raw_password)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -22,11 +21,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-DB_USER = os.getenv('DB_USER') or "root"
-DB_PASSWORD = os.getenv('DB_PASSWORD') or "part2"
-DB_HOST = os.getenv('DB_HOST') or "127.0.0.1"
-DB_PORT = os.getenv('DB_PORT') or "3306"
-DB_NAME = os.getenv('DB_NAME') or "sakila"
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+DB_PORT = os.getenv('DB_PORT')
+DB_NAME = os.getenv('DB_NAME')
 
 
 def run_query(query):
@@ -85,7 +84,6 @@ JOIN film_category fc ON f.film_id = fc.film_id
 JOIN category c ON fc.category_id = c.category_id
 WHERE f.film_id = :id;
     """)
-    
     # Pass the variable as a dictionary to bind it to :id
     result = db.session.execute(query, {"id": film_id}).mappings().first()
     if result:
@@ -130,9 +128,9 @@ def search_films(search_criteria):
         JOIN category c ON fc.category_id = c.category_id
         JOIN film_actor fa ON f.film_id = fa.film_id
         JOIN actor a ON fa.actor_id = a.actor_id
-        WHERE f.title LIKE :val 
-           OR c.name LIKE :val 
-           OR a.first_name LIKE :val 
+        WHERE f.title LIKE :val
+           OR c.name LIKE :val
+           OR a.first_name LIKE :val
            OR a.last_name LIKE :val
     """)
     result = db.session.execute(query, {"val": search_term}).mappings().all()
@@ -146,8 +144,6 @@ def film_details(film_id):
     if result:
         return jsonify(dict(result)) 
     return jsonify({"error": "Film not found"}), 404
-
-
 
 @app.route('/test-db')
 def test_db():

@@ -52,16 +52,39 @@ function Films() {
           <h1 className="font-tomorrow text-6xl font-black uppercase tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-b from-[#FDE68A] via-[#F59E0B] to-[#B45309] drop-shadow-[0_0_15px_rgba(245,158,11,0.3)] mb-4 italic">
             FILM ARCHIVE
           </h1>
+          
           <div className="relative w-full">
             <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            
+            {searchQuery && searchResults.length > 0 && (
+              <div className="absolute z-50 w-full mt-2 bg-zinc-900/95 backdrop-blur-xl border border-zinc-800 rounded-xl shadow-2xl max-h-60 overflow-y-auto custom-scrollbar">
+                {searchResults.map((movie) => (
+                  <button
+                    key={movie.film_id}
+                    onClick={() => {
+                      navigate(`/film-details/${movie.film_id}`);
+                      setSearchQuery('');
+                    }}
+                    className="w-full text-left p-4 hover:bg-amber-500/10 border-b border-zinc-800 last:border-0 transition-colors flex justify-between items-center group"
+                  >
+                    <div>
+                      <p className="text-zinc-200 font-bold uppercase text-sm group-hover:text-amber-400">
+                        {movie.title}
+                      </p>
+                      <p className="text-zinc-500 text-[10px] font-mono">{movie.genre}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </header>
 
         <main className="w-full max-w-4xl">
           <section className="bg-black/60 backdrop-blur-md border border-zinc-800 rounded-2xl p-8 shadow-2xl">
             <div className="flex justify-between items-end mb-8 border-b border-zinc-800 pb-4">
-              <h2 className="text-xl font-bold font-mono text-zinc-100 uppercase tracking-widest">Master Records</h2>
-              <span className="text-[10px] text-zinc-500 font-mono italic">Page {Math.floor(itemOffset/itemsPerPage) + 1} of {pageCount}</span>
+              <h2 className="text-xl font-bold font-mono text-zinc-100 uppercase tracking-widest">List of Films</h2>
+              <span className="text-zinc-500 text-[10px] font-mono">{films.length} films found</span> 
             </div>
 
             <ul className="space-y-4">
@@ -80,9 +103,9 @@ function Films() {
 
             <ReactPaginate
               breakLabel="..."
-              nextLabel="NEXT >"
+              nextLabel="NEXT →"
               onPageChange={handlePageClick}
-              pageRangeDisplayed={3}
+              pageRangeDisplayed={2}
               pageCount={pageCount}
               previousLabel="< PREV"
               containerClassName="flex justify-center gap-2 mt-12 font-mono text-[10px] uppercase tracking-widest items-center"

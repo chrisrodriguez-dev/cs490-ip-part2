@@ -74,7 +74,6 @@ function Customers() {
                                 </li>
                             ))}
                         </ul>
-                    </section>                    
                     <ReactPaginate
                     breakLabel="..."
                     nextLabel="NEXT >"
@@ -89,6 +88,7 @@ function Customers() {
                     activeLinkClassName="bg-amber-500/20 border-amber-500 text-amber-500 font-bold"
                     disabledLinkClassName="opacity-30 cursor-not-allowed"
                     />
+                    </section>                    
                 </main>
             </div>
         </div>
