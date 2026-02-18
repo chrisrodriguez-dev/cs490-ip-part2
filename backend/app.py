@@ -136,6 +136,19 @@ def search_films(search_criteria):
     result = db.session.execute(query, {"val": search_term}).mappings().all()
     return jsonify([dict(row) for row in result])
 
+@app.route("/api/customer/<int:customer_id>", methods=['DELETE'])
+def delete_customer(customer_id):
+    try:
+        db.session.execute(text("DELETE FROM payment WHERE customer_id = :id"), {"id": customer_id})        
+        db.session.execute(text("DELETE FROM rental WHERE customer_id = :id"), {"id": customer_id})
+        db.session.execute(text("DELETE FROM customer WHERE customer_id = :id"), {"id": customer_id})
+        db.session.commit()
+        return jsonify({"message": f"Customer {customer_id} and all related records deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Delete Error: {str(e)}")
+        return jsonify({"error": "Failed to delete customer. They may have active records in other tables."}), 500
+
 #film details api
 @app.route("/api/film-details/<int:film_id>")
 def film_details(film_id):
