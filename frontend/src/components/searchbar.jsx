@@ -9,7 +9,7 @@ const searchbar = ({ value, onChange }) => {
       
       <div className="relative flex items-center">
         
-        <Search className="absolute left-4 w-4 h-4 text-zinc-500 group-focus-within:text-amber-500 transition-colors duration-300" />
+        <Search className="absolute left-4 w-4 h-4 text-white group-focus-within:text-amber-500 transition-colors duration-300" />
         
        
         <input 

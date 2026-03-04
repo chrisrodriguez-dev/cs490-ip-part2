@@ -10,7 +10,7 @@ function Films() {
   const [films, setFilms] = useState([]);
   const navigate = useNavigate();
 
-  // Pagination State
+  // pagination state
   const [itemOffset, setItemOffset] = useState(0);
   const itemsPerPage = 10;
 
@@ -32,7 +32,7 @@ function Films() {
     }
   }, [searchQuery]);
 
-  // Pagination Logic
+  // pagination logic
   const endOffset = itemOffset + itemsPerPage;
   const currentItems = films.slice(itemOffset, endOffset);
   const pageCount = Math.ceil(films.length / itemsPerPage);
@@ -95,7 +95,7 @@ function Films() {
                       <span className="text-amber-500 font-mono text-xs font-bold w-12 text-center bg-amber-500/10 py-1 rounded">ID: {film.film_id}</span>
                       <p className="text-zinc-200 font-bold uppercase tracking-tight">{film.title}</p>
                     </div>
-                    <button onClick={() => navigate(`/film-details/${film.film_id}`)} className="text-[10px] font-mono text-zinc-500 border border-zinc-800 px-3 py-1 rounded hover:bg-zinc-800 hover:text-white transition-colors">VIEW_DATA</button>
+                    <button onClick={() => navigate(`/film-details/${film.film_id}`)} className="text-[10px] font-mono text-zinc-500 border border-zinc-800 px-3 py-1 rounded hover:bg-zinc-800 hover:text-white transition-colors">View</button>
                   </div>
                 </li>
               ))}

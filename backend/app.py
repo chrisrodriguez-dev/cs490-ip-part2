@@ -10,7 +10,7 @@ app = Flask(__name__, template_folder="../frontend/templates")
 
 load_dotenv()
 
-raw_password = os.getenv('DB_PASS') #This turns the '@' into '%40' so the URL doesn't break
+raw_password = os.getenv('DB_PASSWORD') 
 safe_password = urllib.parse.quote_plus(raw_password)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -37,6 +37,7 @@ def run_query(query):
 def index():
     return "Hello, World!"
 
+
 # this decorator tells flask what URL should activate this function
 @app.route("/api/landing-page", methods=['GET']) # 1. Change to GET
 def landing_page():
@@ -61,7 +62,7 @@ def landing_page():
     ORDER BY total_rentals DESC
     LIMIT 5;
     """
-    #Package it in a dictionary so React can find "movies"
+    #package it in a dictionary so React can find "movies"
     return jsonify({
         "movies": run_query(query1), 
         "actorMovies": run_query(query2)
@@ -84,12 +85,14 @@ JOIN film_category fc ON f.film_id = fc.film_id
 JOIN category c ON fc.category_id = c.category_id
 WHERE f.film_id = :id;
     """)
-    # Pass the variable as a dictionary to bind it to :id
+    #pass the variable as a dictionary to bind it to :id
     result = db.session.execute(query, {"id": film_id}).mappings().first()
     if result:
         return jsonify(dict(result))
     return jsonify({"error": "Film not found"}), 404 
     
+
+
 @app.route("/api/actor/<int:actor_id>", methods=['GET'])
 def get_actor_details(actor_id):
     query = text("""
@@ -118,6 +121,8 @@ def get_actor_details(actor_id):
     else:
         return jsonify({"error": "Actor not found"}), 404
 
+
+
 @app.route("/api/search/<search_criteria>")
 def search_films(search_criteria):
     search_term = f"%{search_criteria}%"
@@ -136,6 +141,8 @@ def search_films(search_criteria):
     result = db.session.execute(query, {"val": search_term}).mappings().all()
     return jsonify([dict(row) for row in result])
 
+
+
 @app.route("/api/customer/<int:customer_id>", methods=['DELETE'])
 def delete_customer(customer_id):
     try:
@@ -148,6 +155,8 @@ def delete_customer(customer_id):
         db.session.rollback()
         print(f"Delete Error: {str(e)}")
         return jsonify({"error": "Failed to delete customer. They may have active records in other tables."}), 500
+
+
 
 #film details api
 @app.route("/api/film-details/<int:film_id>")
@@ -168,14 +177,31 @@ def test_db():
         return jsonify({"error": str(e)}), 500
     
 
-@app.route("/api/customers")
-def get_customers():
-    query = text("""
-        SELECT customer_id, first_name, last_name, email
-        FROM customer
-    """)
+
+@app.route("/api/customers", methods=["GET", "POST"])
+def manage_customers():
+    if request.method == "POST":
+        data = request.get_json()
+        try:
+            db.session.execute(text("""
+                INSERT INTO customer
+                (store_id, first_name, last_name, email, address_id, active, create_date, last_update)
+                VALUES (1, :first_name, :last_name, :email, 1, 1, NOW(), NOW())
+            """), {
+                "first_name": data.get("first_name"),
+                "last_name": data.get("last_name"),
+                "email": data.get("email")
+            })
+            db.session.commit()
+            return jsonify({"message": "Customer added successfully"}), 201
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": str(e)}), 500
+    
+    query = text("SELECT customer_id, first_name, last_name, email FROM customer")
     result = db.session.execute(query).mappings().all()
     return jsonify([dict(row) for row in result])
+
 
 
 @app.route("/api/films")
@@ -186,6 +212,74 @@ def get_films():
     """)
     result = db.session.execute(query).mappings().all()
     return jsonify([dict(row) for row in result])
+
+
+@app.route("/api/rentals", methods=['POST'])
+def create_rental():
+    data = request.json
+    c_id = data.get('customer_id')
+    i_id = data.get('inventory_id')
+    query = text(f"""
+        INSERT INTO rental (rental_date, inventory_id, customer_id, return_date, staff_id, last_update) 
+        VALUES (NOW(), {i_id}, {c_id}, NULL, 1, NOW())
+    """)
+    db.session.execute(query)
+    db.session.commit()
+    return jsonify({"message": "Rental added successfully"}), 201
+
+
+@app.route("/api/customer/<int:customer_id>/rentals", methods=['GET'])
+def get_customer_history(customer_id):
+    query = text("""
+        SELECT r.rental_id, f.title, r.rental_date, r.return_date 
+        FROM rental r
+        JOIN inventory i ON r.inventory_id = i.inventory_id
+        JOIN film f ON i.film_id = f.film_id
+        WHERE r.customer_id = :cid
+        ORDER BY r.rental_date DESC
+    """)
+    result = db.session.execute(query, {"cid": customer_id}).mappings().all()
+    return jsonify([dict(row) for row in result])
+
+
+@app.route("/api/customers/<int:customer_id>", methods=["PUT"])
+def update_customer(customer_id):
+    data = request.get_json()
+    try:
+        db.session.execute(text("""
+            UPDATE customer 
+            SET first_name = :first_name, 
+                last_name = :last_name, 
+                email = :email,
+                last_update = NOW()
+            WHERE customer_id = :id
+        """), {
+            "first_name": data.get("first_name").upper(),
+            "last_name": data.get("last_name").upper(),
+            "email": data.get("email"),
+            "id": customer_id
+        })
+        db.session.commit()
+        return jsonify({"message": "Customer updated successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print("Update Error:", str(e))
+        return jsonify({"error": str(e)}), 500
+  
     
+@app.route("/api/rentals/<int:rental_id>/return", methods=['PUT'])
+def return_rental(rental_id):
+    query = text("""
+        UPDATE rental 
+        SET return_date = NOW(), last_update = NOW() 
+        WHERE rental_id = :rid
+    """)
+    
+    db.session.execute(query, {"rid": rental_id})
+    db.session.commit()
+    
+    return jsonify({"message": "Film returned successfully"}), 200
+    
+
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)
